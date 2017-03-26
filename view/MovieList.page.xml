@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+   <param name="firstResult" value="#{movieList.firstResult}"/>
+   <param name="sort" value="#{movieList.orderColumn}"/>
+   <param name="dir" value="#{movieList.orderDirection}"/>
+
+   <param name="from"/>
+   <param name="country" value="#{movieList.movie.country}"/>
+   <param name="name" value="#{movieList.movie.name}"/>
+   <param name="originalName" value="#{movieList.movie.originalName}"/>
+   <param name="actSurname" value="#{movieCriteria.actSurname}"/>
+   <param name="dirSurname" value="#{movieCriteria.dirSurname}"/>
+   <param name="language" value="#{movieCriteria.language}"/>
+   <param name="movieYear" value="#{movieList.movie.movieYear}" converterId="org.jboss.seam.ui.DateTimeConverter"/>
+   <param name="score" value="#{movieList.movie.score}"/>
+   <param name="videoCoding" value="#{movieList.movie.videoCoding}"/>
+   <param name="aspectRatio" value="#{movieList.movie.aspectRatio}"/>
+   <param name="fromTV" value="#{movieList.movie.fromTV}"/>
+   <param name="borrowedTo" value="#{movieCriteria.borrowedTo}"/>
+   <param name="artistId" value="#{artistHome.artistId}"/>
+   <param name="supportId" value="#{supportHome.supportId}"/>
+   <param name="genreId" value="#{genreHome.genreId}"/>
+   <param name="actorOrDir" value="#{artistHome.actorOrDir}"/>
+
+</page>

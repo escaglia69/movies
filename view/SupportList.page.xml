@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd">
+
+   <param name="firstResult" value="#{supportList.firstResult}"/>
+   <param name="sort" value="#{supportList.orderColumn}"/>
+   <param name="dir" value="#{supportList.orderDirection}"/>
+
+   <param name="from"/>
+   <param name="storage" value="#{supportList.support.storage}"/>
+   <param name="borrowedTo" value="#{supportList.support.borrowedTo}"/>
+
+</page>

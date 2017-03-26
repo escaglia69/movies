@@ -1,0 +1,175 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="genre" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{genreHome.managed ? 'Edit' : 'Add'} Genre</f:facet>
+
+
+
+            <s:decorate id="nameField" template="layout/edit.xhtml">
+                <ui:define name="label">Name</ui:define>
+                <h:inputText id="name" value="#{genreHome.instance.name}"/>
+            </s:decorate>
+
+            <s:decorate id="descriptionField" template="layout/edit.xhtml">
+                <ui:define name="label">Description</ui:define>
+                <h:inputText id="description" value="#{genreHome.instance.description}"/>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{genreHome.persist}"
+                       disabled="#{!genreHome.wired}"
+                       rendered="#{!genreHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{genreHome.update}"
+                       rendered="#{genreHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{genreHome.remove}"
+                      immediate="true"
+                       rendered="#{genreHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                  action="#{genreHome.revert}"
+                rendered="#{genreHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty genreFrom ? 'GenreList' : genreFrom}.xhtml"
+                rendered="#{!genreHome.managed}"/>
+
+        </div>
+    </h:form>
+
+
+    <rich:tabPanel switchType="client">
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Movies</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="moviesChildren">
+
+        <h:outputText value="There are no movies associated with this genre."
+                   rendered="#{empty genreHome.movies}"/>
+
+        <rich:dataTable value="#{genreHome.movies}"
+                       var="_movie"
+                  rendered="#{not empty genreHome.movies}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="moviesTable">
+            <rich:column sortBy="#{_movie.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_movie.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.name}">
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{_movie.name}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.originalName}">
+                <f:facet name="header">Original name</f:facet>
+                <h:outputText value="#{_movie.originalName}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.playbill}">
+                <f:facet name="header">Playbill</f:facet>
+                <s:graphicImage value="#{_movie.playbill ne null ?
+					_movie.playbill : '/img/generic_playbill.jpg'}"
+					fileName="#{_movie.name}"
+					alt="[playbill image]">
+					<s:transformImageSize height="64" maintainRatio="true"/>
+				</s:graphicImage>
+            </rich:column>
+            <rich:column sortBy="#{_movie.movieYear}">
+                <f:facet name="header">Movie year</f:facet>
+                <h:outputText value="#{_movie.movieYear}">
+                	<s:convertDateTime pattern="yyyy"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_movie.country}">
+                <f:facet name="header">Country</f:facet>
+                <h:outputText value="#{_movie.country}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.movieLength}">
+                <f:facet name="header">Length</f:facet>
+                <h:outputText value="#{_movie.movieLength}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.score}">
+                <f:facet name="header">Score</f:facet>
+                <h:outputText value="#{_movie.score}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.videoCoding.label}">
+                <f:facet name="header">Coding</f:facet>
+                <h:outputText value="#{_movie.videoCoding.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.aspectRatio.label}">
+                <f:facet name="header">Aspect Ratio</f:facet>
+                <h:outputText value="#{_movie.aspectRatio.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.fromTV}">
+                <f:facet name="header">Rec. from TV</f:facet>
+                <h:selectBooleanCheckbox value="#{_movie.fromTV}" disabled="true"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectmovie"
+                     value="Select"
+                      view="/Movie.xhtml">
+                    <f:param name="movieId"
+                            value="#{_movie.id}"/>
+                    <f:param name="movieFrom" value="Genre"/>
+                </s:link>
+            	#{' '}
+				<s:link id="movieRemove" value="Remove" action="#{genreHome.removeFromMovies}">
+					<f:param name="movieId" value="#{_movie.id}" />
+				</s:link>
+            </h:column>
+        </rich:dataTable>
+    </h:form>
+
+        <f:subview rendered="#{genreHome.managed}" id="movies">
+        <div class="actionButtons">
+            <s:button id="addmovie"
+                   value="Add movie"
+                    view="/MovieList.xhtml"
+             propagation="none">
+                 <f:param name="genreId"
+                         value="#{genreHome.instance.id}"/>
+                 <f:param name="from" value="GenreEdit"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+    
+</rich:tabPanel>
+
+</ui:define>
+
+</ui:composition>

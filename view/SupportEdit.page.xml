@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd"
+      no-conversation-view-id="/SupportList.xhtml"
+      login-required="true">
+
+   <begin-conversation join="true" flush-mode="MANUAL"/>
+
+   <action execute="#{supportHome.wire}"/>
+
+   <param name="supportFrom"/>
+   <param name="supportId" value="#{supportHome.supportId}"/>
+   <param name="movieId" value="#{movieHome.movieId}"/>
+
+
+
+   <navigation from-action="#{supportHome.persist}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/Support.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{supportHome.update}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/Support.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{supportHome.revert}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/Support.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{supportHome.remove}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/SupportList.xhtml"/>
+      </rule>
+   </navigation>
+
+</page>

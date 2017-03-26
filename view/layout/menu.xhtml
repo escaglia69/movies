@@ -1,0 +1,34 @@
+<rich:toolbar
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:rich="http://richfaces.org/rich">
+    <rich:toolbarGroup>
+        <h:outputText value="#{projectName}:"/>
+        <s:link view="/home.xhtml" value="Home" propagation="none"/>
+    </rich:toolbarGroup>
+    <s:link view="/ArtistList.xhtml"
+           value="Artist List"
+includePageParams="false"
+     propagation="none"/>
+    <s:link view="/GenreList.xhtml"
+           value="Genre List"
+includePageParams="false"
+     propagation="none"/>
+    <s:link view="/SupportList.xhtml"
+           value="Support List"
+includePageParams="false"
+     propagation="none"/>
+    <s:link view="/MovieList.xhtml"
+           value="Movie List"
+includePageParams="false"
+     propagation="none"/>
+    <!-- @newMenuItem@ -->
+    <rich:toolbarGroup location="right">
+        <h:outputText value="signed in as: #{identity.username}" rendered="#{identity.loggedIn}"/>
+        <s:link view="/login.xhtml" value="Login" rendered="#{not identity.loggedIn}" propagation="none"/>
+        <s:link view="/home.xhtml" action="#{identity.logout}" value="Logout" rendered="#{identity.loggedIn}" propagation="none"/>
+    </rich:toolbarGroup>
+</rich:toolbar>

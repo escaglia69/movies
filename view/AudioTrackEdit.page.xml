@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd"
+      no-conversation-view-id="/MovieList.xhtml"
+      login-required="true">
+
+   <begin-conversation join="true" flush-mode="manual"/>
+
+   <action execute="#{audioTrackHome.wire}"/>
+
+   <param name="audioTrackFrom"/>
+   <param name="audioTrackId" value="#{audioTrackHome.audioTrackId}"/>
+   <param name="movieId" value="#{movieHome.movieId}"/>
+
+
+   <navigation from-action="#{audioTrackHome.persist}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/MovieEdit.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{audioTrackHome.update}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/MovieEdit.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{audioTrackHome.revert}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/MovieEdit.xhtml"/>
+      </rule>
+   </navigation>
+
+   <navigation from-action="#{audioTrackHome.remove}">
+      <rule>
+         <end-conversation/>
+         <redirect view-id="/MovieEdit.xhtml"/>
+      </rule>
+   </navigation>
+
+</page>

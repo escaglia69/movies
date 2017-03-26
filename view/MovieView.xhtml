@@ -1,0 +1,367 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <rich:panel>
+        <f:facet name="header">Movie Details</f:facet>
+
+        <s:decorate id="name" template="layout/display.xhtml">
+            <ui:define name="label">Name</ui:define>
+            <h:outputText value="#{movieHome.instance.name}"/>
+        </s:decorate>
+
+        <s:decorate id="originalName" template="layout/display.xhtml">
+            <ui:define name="label">Original name</ui:define>
+            <h:outputText value="#{movieHome.instance.originalName}"/>
+        </s:decorate>
+
+        <s:decorate id="movieYear" template="layout/display.xhtml">
+            <ui:define name="label">Movie year</ui:define>
+            <h:outputText value="#{movieHome.instance.movieYear}">
+            	<s:convertDateTime pattern="yyyy"/>
+            </h:outputText>
+        </s:decorate>
+
+        <s:decorate id="country" template="layout/display.xhtml">
+            <ui:define name="label">Country</ui:define>
+            <h:outputText value="#{movieHome.instance.country.label}"/>
+        </s:decorate>
+
+        <s:decorate id="movieLength" template="layout/display.xhtml">
+            <ui:define name="label">Length (minutes)</ui:define>
+            <h:outputText value="#{movieHome.instance.movieLength}"/>
+        </s:decorate>
+
+        <s:decorate id="plot" template="layout/display.xhtml">
+            <ui:define name="label">Plot</ui:define>
+            <h:outputText value="#{movieHome.instance.plot}"/>
+        </s:decorate>
+
+        <s:decorate id="score" template="layout/display.xhtml">
+            <ui:define name="label">Score</ui:define>
+            <h:outputText value="#{movieHome.instance.score}"/>
+        </s:decorate>
+
+        <s:decorate id="subt1" template="layout/display.xhtml">
+            <ui:define name="label">Subtitle 1 language</ui:define>
+            <h:outputText value="#{movieHome.instance.subt1.label}"/>
+        </s:decorate>
+
+        <s:decorate id="subt2" template="layout/display.xhtml">
+            <ui:define name="label">Subtitle 2 language</ui:define>
+            <h:outputText value="#{movieHome.instance.subt2.label}"/>
+        </s:decorate>
+
+        <s:decorate id="subt3" template="layout/display.xhtml">
+            <ui:define name="label">Subtitle 3 language</ui:define>
+            <h:outputText value="#{movieHome.instance.subt3.label}"/>
+        </s:decorate>
+
+        <s:decorate id="aspectRatio" template="layout/display.xhtml">
+            <ui:define name="label">Aspect ratio</ui:define>
+            <h:outputText value="#{movieHome.instance.aspectRatio.label}"/>
+        </s:decorate>
+
+        <s:decorate id="videoCoding" template="layout/display.xhtml">
+            <ui:define name="label">Video coding</ui:define>
+            <h:outputText value="#{movieHome.instance.videoCoding.label}"/>
+        </s:decorate>
+
+        <s:decorate id="fromTV" template="layout/display.xhtml">
+            <ui:define name="label">Recorded from TV</ui:define>
+            <h:selectBooleanCheckbox value="#{movieHome.instance.fromTV}" disabled="true"/>
+         </s:decorate>
+
+		<s:decorate id="playbill" template="layout/display.xhtml">
+			<ui:define name="label">Playbill</ui:define>
+			<s:graphicImage value="#{movieHome.instance.playbill ne null ?
+				movieHome.instance.playbill : '/img/generic_playbill.jpg'}"
+				fileName="#{movieHome.instance.name}"
+				alt="[playbill image]">
+				<s:transformImageSize width="256" maintainRatio="true"/>
+			</s:graphicImage>
+		</s:decorate>
+
+        <div style="clear:both"/>
+
+    </rich:panel>
+
+    <div class="actionButtons">
+
+        <s:button view="/MovieEdit.xhtml"
+                    id="edit"
+                 value="Edit"/>
+
+        <s:button view="/#{empty movieFrom ? 'MovieList' : movieFrom}.xhtml"
+                    id="done"
+                 value="Done"/>
+
+    </div>
+
+    <rich:tabPanel switchType="client">
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Actors</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="actorsChildren">
+
+        <h:outputText value="There are no actors associated with this movie."
+                   rendered="#{empty movieHome.actors}"/>
+
+        <rich:dataTable value="#{movieHome.actors}"
+                       var="_actor"
+                  rendered="#{not empty movieHome.actors}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="actorsTable">
+            <rich:column sortBy="#{_actor.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_actor.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_actor.name}">
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{_actor.name}"/>
+            </rich:column>
+            <rich:column sortBy="#{_actor.surname}">
+                <f:facet name="header">Surname</f:facet>
+                <h:outputText value="#{_actor.surname}"/>
+            </rich:column>
+            <rich:column sortBy="#{_actor.picture}">
+                <f:facet name="header">Picture</f:facet>
+				<s:graphicImage value="#{_actor.picture ne null ?
+					_actor.picture : '/img/generic_profile.jpg'}"
+					fileName="#{_actor.surname}"
+					alt="[profile image]">
+					<s:transformImageSize height="64" maintainRatio="true"/>
+				</s:graphicImage>
+            </rich:column>
+            <rich:column sortBy="#{_actor.birthDate}">
+                <f:facet name="header">Birth date</f:facet>
+                <h:outputText value="#{_actor.birthDate}">
+                	<s:convertDateTime type="date"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_actor.country}">
+                <f:facet name="header">Country</f:facet>
+                <h:outputText value="#{_actor.country.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_actor.sex}">
+                <f:facet name="header">Sex</f:facet>
+                <h:outputText value="#{_actor.sex.label}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectactor"
+                     value="Select"
+                      view="/Artist.xhtml">
+                    <f:param name="artistId"
+                            value="#{_actor.id}"/>
+                    <f:param name="artistFrom" value="Movie"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Directors</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="directorsChildren">
+
+        <h:outputText value="There are no directors associated with this movie."
+                   rendered="#{empty movieHome.directors}"/>
+
+        <rich:dataTable value="#{movieHome.directors}"
+                       var="_director"
+                  rendered="#{not empty movieHome.directors}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="directorsTable">
+            <rich:column sortBy="#{_director.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_director.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_director.name}">
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{_director.name}"/>
+            </rich:column>
+            <rich:column sortBy="#{_director.surname}">
+                <f:facet name="header">Surname</f:facet>
+                <h:outputText value="#{_director.surname}"/>
+            </rich:column>
+            <rich:column sortBy="#{_director.picture}">
+                <f:facet name="header">Picture</f:facet>
+				<s:graphicImage value="#{_director.picture ne null ?
+					_director.picture : '/img/generic_profile.jpg'}"
+					fileName="#{_director.surname}"
+					alt="[profile image]">
+					<s:transformImageSize height="64" maintainRatio="true"/>
+				</s:graphicImage>
+            </rich:column>
+            <rich:column sortBy="#{_director.birthDate}">
+                <f:facet name="header">Birth Date</f:facet>
+                <h:outputText value="#{_director.birthDate}">
+                	<s:convertDateTime type="date"/>
+               </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_director.country}">
+                <f:facet name="header">Country</f:facet>
+                <h:outputText value="#{_director.country.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_director.sex}">
+                <f:facet name="header">Sex</f:facet>
+                <h:outputText value="#{_director.sex.label}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectdirector"
+                     value="Select"
+                      view="/Artist.xhtml">
+                    <f:param name="artistId"
+                            value="#{_director.id}"/>
+                    <f:param name="artistFrom" value="Movie"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Genres</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="genresChildren">
+
+        <h:outputText value="There are no genres associated with this movie."
+                   rendered="#{empty movieHome.genres}"/>
+
+        <rich:dataTable value="#{movieHome.genres}"
+                       var="_genre"
+                  rendered="#{not empty movieHome.genres}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="genresTable">
+            <rich:column sortBy="#{_genre.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_genre.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_genre.name}">
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{_genre.name}"/>
+            </rich:column>
+            <rich:column sortBy="#{_genre.description}">
+                <f:facet name="header">Description</f:facet>
+                <h:outputText value="#{_genre.description}"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectgenre"
+                     value="Select"
+                      view="/Genre.xhtml">
+                    <f:param name="genreId"
+                            value="#{_genre.id}"/>
+                    <f:param name="genreFrom" value="Movie"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Support</h:panelGroup>
+        </f:facet>
+    <div class="association" id="supportParent">
+
+        <h:outputText value="There is no support associated with this movie."
+                   rendered="#{movieHome.instance.support == null}"/>
+
+        <rich:dataTable var="_support"
+                   value="#{movieHome.instance.support}"
+                rendered="#{movieHome.instance.support != null}"
+              rowClasses="rvgRowOne,rvgRowTwo"
+                      id="supportTable">
+            <h:column>
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_support.id}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Folder</f:facet>
+                <h:outputText value="#{_support.folder}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Position number</f:facet>
+                <h:outputText value="#{_support.posNumber}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Storage</f:facet>
+                <h:outputText value="#{_support.storage.label}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Borrowed to</f:facet>
+                <h:outputText value="#{_support.borrowedTo}"/>
+            </h:column>
+            <h:column styleClass="action">
+                <f:facet name="header">Action</f:facet>
+                <s:link id="viewsupport"
+                     value="View"
+                      view="/Support.xhtml">
+                    <f:param name="supportId"
+                           value="#{_support.id}"/>
+                    <f:param name="supportFrom" value="Movie"/>
+                </s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Audio Tracks</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="audioTracksChildren">
+
+        <h:outputText value="There are no audio tracks associated with this movie."
+                   rendered="#{empty movieHome.audioTracks}"/>
+
+        <rich:dataTable value="#{movieHome.audioTracks}"
+                       var="_audioTrack"
+                  rendered="#{not empty movieHome.audioTracks}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="audioTracksTable">
+            <rich:column sortBy="#{_audioTrack.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_audioTrack.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_audioTrack.trackNumber}">
+                <f:facet name="header">Track Number</f:facet>
+                <h:outputText value="#{_audioTrack.trackNumber}"/>
+            </rich:column>
+            <rich:column sortBy="#{_audioTrack.language.label}">
+                <f:facet name="header">Language</f:facet>
+                <h:outputText value="#{_audioTrack.language.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_audioTrack.audioCoding.label}">
+                <f:facet name="header">Audio Coding</f:facet>
+                <h:outputText value="#{_audioTrack.audioCoding.label}"/>
+            </rich:column>
+        </rich:dataTable>
+
+    </h:form>
+    </rich:tab>
+
+</rich:tabPanel>
+</ui:define>
+
+</ui:composition>

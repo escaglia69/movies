@@ -1,0 +1,191 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="support" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{supportHome.managed ? 'Edit' : 'Add'} Support</f:facet>
+
+            <s:decorate id="folderField" template="layout/edit.xhtml">
+                <ui:define name="label">Folder</ui:define>
+                <h:inputText id="folder"
+                          value="#{supportHome.instance.folder}">
+                    <a:ajax event="blur" reRender="folderField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="posNumberField" template="layout/edit.xhtml">
+                <ui:define name="label">Pos number</ui:define>
+                <h:inputText id="posNumber"
+                          value="#{supportHome.instance.posNumber}">
+                    <a:ajax event="blur" reRender="posNumberField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="storageField" template="layout/edit.xhtml">
+                <ui:define name="label">Storage</ui:define>
+				<h:selectOneMenu value="#{supportHome.instance.storage}">
+			        <s:selectItems var="storage" value="#{storages}"
+						label="#{storage.label}" noSelectionLabel="-- Select --"/>
+			         <s:convertEnum/>
+				</h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="borrowedToField" template="layout/edit.xhtml">
+                <ui:define name="label">Borrowed to</ui:define>
+                <h:inputText id="borrowedTo"
+                              value="#{supportHome.instance.borrowedTo}"/>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{supportHome.persist}"
+                       disabled="#{!supportHome.wired}"
+                       rendered="#{!supportHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{supportHome.update}"
+                       rendered="#{supportHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{supportHome.remove}"
+                      immediate="true"
+                       rendered="#{supportHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                  action="#{supportHome.revert}"
+                rendered="#{supportHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty supportFrom ? 'SupportList' : supportFrom}.xhtml"
+                rendered="#{!supportHome.managed}"/>
+
+        </div>
+    </h:form>
+
+<rich:tabPanel switchType="client">
+
+    <rich:tab label="Movies">
+        <h:form styleClass="association" id="moviesChildren">
+
+            <h:outputText value="There are no movies associated with this support."
+                       rendered="#{empty supportHome.movies}"/>
+
+            <rich:dataTable value="#{supportHome.movies}"
+                           var="_movie"
+                      rendered="#{not empty supportHome.movies}"
+                    rowClasses="rvgRowOne,rvgRowTwo"
+                            id="moviesTable">
+                <rich:column sortBy="#{_movie.id}">
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{_movie.id}"/>
+                </rich:column>
+                <rich:column sortBy="#{_movie.name}">
+                    <f:facet name="header">Name</f:facet>
+                    <h:outputText value="#{_movie.name}"/>
+                </rich:column>
+                <rich:column sortBy="#{_movie.originalName}">
+                    <f:facet name="header">Original name</f:facet>
+                    <h:outputText value="#{_movie.originalName}"/>
+                </rich:column>
+                <rich:column sortBy="#{_movie.playbill}">
+                    <f:facet name="header">Playbill</f:facet>
+	                <s:graphicImage value="#{_movie.playbill ne null ?
+						_movie.playbill : '/img/generic_playbill.jpg'}"
+						fileName="#{_movie.name}"
+						alt="[playbill image]">
+						<s:transformImageSize height="64" maintainRatio="true"/>
+					</s:graphicImage>
+                </rich:column>
+                <rich:column sortBy="#{_movie.movieYear}">
+                    <f:facet name="header">Movie year</f:facet>
+                    <h:outputText value="#{_movie.movieYear}">
+                    	<s:convertDateTime pattern="yyyy"/>
+                    </h:outputText>
+                </rich:column>
+                <rich:column sortBy="#{_movie.country}">
+                    <f:facet name="header">Country</f:facet>
+                    <h:outputText value="#{_movie.country}"/>
+                </rich:column>
+                <rich:column sortBy="#{_movie.movieLength}">
+                    <f:facet name="header">Length</f:facet>
+                    <h:outputText value="#{_movie.movieLength}"/>
+                </rich:column>
+                <rich:column sortBy="#{_movie.score}">
+                    <f:facet name="header">Score</f:facet>
+                    <h:outputText value="#{_movie.score}"/>
+                </rich:column>
+	            <rich:column sortBy="#{_movie.videoCoding.label}">
+	                <f:facet name="header">Coding</f:facet>
+	                <h:outputText value="#{_movie.videoCoding.label}"/>
+	            </rich:column>
+	            <rich:column sortBy="#{_movie.aspectRatio.label}">
+	                <f:facet name="header">Aspect Ratio</f:facet>
+	                <h:outputText value="#{_movie.aspectRatio.label}"/>
+	            </rich:column>
+	            <rich:column sortBy="#{_movie.fromTV}">
+	                <f:facet name="header">Rec. from TV</f:facet>
+	                <h:selectBooleanCheckbox value="#{_movie.fromTV}" disabled="true"/>
+	            </rich:column>
+	            <h:column>
+	                <f:facet name="header">Action</f:facet>
+	                <s:link id="selectmovie"
+	                     value="Select"
+	                      view="/Movie.xhtml">
+	                    <f:param name="movieId"
+	                            value="#{_movie.id}"/>
+	                    <f:param name="movieFrom" value="SupportEdit"/>
+	                </s:link>
+	            	#{' '}
+					<s:link id="movieRemove" value="Remove" action="#{supportHome.removeFromMovies}">
+						<f:param name="movieId" value="#{_movie.id}" />
+					</s:link>
+	            </h:column>
+            </rich:dataTable>
+
+        </h:form>
+
+        <f:subview rendered="#{supportHome.managed}" id="movies">
+        <div class="actionButtons">
+            <s:button id="addmovie"
+                   value="Add movie"
+                    view="/MovieList.xhtml"
+             propagation="none">
+                 <f:param name="supportId"
+                         value="#{supportHome.instance.id}"/>
+                 <f:param name="from" value="SupportEdit"/>
+            </s:button>
+        </div>
+        </f:subview>
+    </rich:tab>
+
+</rich:tabPanel>
+
+</ui:define>
+
+</ui:composition>

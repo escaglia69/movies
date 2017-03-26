@@ -1,0 +1,14 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+exploded-archives/**
+dist/**
+test-build/**
+.settings/**
+

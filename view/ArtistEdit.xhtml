@@ -1,0 +1,299 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="artist" styleClass="edit" enctype="multipart/form-data">
+
+        <rich:panel>
+            <f:facet name="header">#{artistHome.managed ? 'Edit' : 'Add'} Artist</f:facet>
+
+            <s:decorate id="nameField" template="layout/edit.xhtml">
+                <ui:define name="label">Name</ui:define>
+                <h:inputText id="name" value="#{artistHome.instance.name}"/>
+            </s:decorate>
+
+            <s:decorate id="surnameField" template="layout/edit.xhtml">
+                <ui:define name="label">Surname</ui:define>
+                <h:inputText id="surname" value="#{artistHome.instance.surname}"/>
+            </s:decorate>
+
+            <s:decorate id="birthDateField" template="layout/edit.xhtml">
+                <ui:define name="label">Birth date</ui:define>
+				<rich:calendar id="birthDate"
+						  value="#{artistHome.instance.birthDate}">	
+				</rich:calendar>
+            </s:decorate>
+            <s:decorate id="countryField" template="layout/edit.xhtml">
+                <ui:define name="label">Country</ui:define>
+				<h:selectOneMenu value="#{artistHome.instance.country}">
+			        <s:selectItems var="country" value="#{countries}"
+						label="#{country.label}" noSelectionLabel="-- Select --"/>
+			        <s:convertEnum/>
+				</h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="sexField" template="layout/edit.xhtml">
+                <ui:define name="label">Sex</ui:define>
+				<h:selectOneRadio id="sex"
+							  value="#{artistHome.instance.sex}">
+					<s:convertEnum/>
+					<s:enumItem enumValue="MALE" label="Male"/>
+					<s:enumItem enumValue="FEMALE" label="Female"/>
+				</h:selectOneRadio>
+            </s:decorate>
+
+			<s:decorate id="pictureField" template="layout/edit.xhtml">
+				<ui:define name="label">Picture</ui:define>
+				<s:fileUpload id="picture"
+					accept="image/png,image/gif,image/jpeg"
+					data="#{artistHome.instance.picture}"
+					contentType="#{artistHome.instance.picContentType}"/>
+			</s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{artistHome.persist}"
+                       disabled="#{!artistHome.wired}"
+                       rendered="#{!artistHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{artistHome.update}"
+                       rendered="#{artistHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{artistHome.remove}"
+                      immediate="true"
+                       rendered="#{artistHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel"
+             propagation="end"
+                  action="#{artistHome.revert}"
+                rendered="#{artistHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty artistFrom ? 'ArtistList' : artistFrom}.xhtml"
+                rendered="#{!artistHome.managed}"/>
+
+        </div>
+    </h:form>
+
+    <rich:tabPanel switchType="client">
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Movies as an actor</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="moviesAsActorChildren">
+
+        <h:outputText value="There are no movies associated with this actor."
+                   rendered="#{empty artistHome.moviesAsActor}"/>
+
+        <rich:dataTable value="#{artistHome.moviesAsActor}"
+                       var="_movie"
+                  rendered="#{not empty artistHome.moviesAsActor}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="moviesTable">
+            <rich:column sortBy="#{_movie.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_movie.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.name}">
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{_movie.name}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.originalName}">
+                <f:facet name="header">Original Name</f:facet>
+                <h:outputText value="#{_movie.originalName}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.playbill}">
+                <f:facet name="header">Playbill</f:facet>
+                <s:graphicImage value="#{_movie.playbill ne null ?
+					_movie.playbill : '/img/generic_playbill.jpg'}"
+					fileName="#{_movie.name}"
+					alt="[playbill image]">
+					<s:transformImageSize height="64" maintainRatio="true"/>
+				</s:graphicImage>
+            </rich:column>
+            <rich:column sortBy="#{_movie.movieYear}">
+                <f:facet name="header">Movie Year</f:facet>
+                <h:outputText value="#{_movie.movieYear}">
+                	<s:convertDateTime pattern="yyyy"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_movie.country}">
+                <f:facet name="header">Country</f:facet>
+                <h:outputText value="#{_movie.country.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.movieLength}">
+                <f:facet name="header">Length</f:facet>
+                <h:outputText value="#{_movie.movieLength}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.score}">
+                <f:facet name="header">Score</f:facet>
+                <h:outputText value="#{_movie.score}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.videoCoding.label}">
+                <f:facet name="header">Coding</f:facet>
+                <h:outputText value="#{_movie.videoCoding.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.aspectRatio.label}">
+                <f:facet name="header">Aspect Ratio</f:facet>
+                <h:outputText value="#{_movie.aspectRatio.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.fromTV}">
+                <f:facet name="header">Rec. from TV</f:facet>
+                <h:selectBooleanCheckbox value="#{_movie.fromTV}" disabled="true"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectmovie"
+                     value="Select"
+                      view="/Movie.xhtml">
+                    <f:param name="movieId"
+                            value="#{_movie.id}"/>
+                    <f:param name="movieFrom" value="ArtistEdit"/>
+                </s:link>
+            	#{' '}
+				<s:link id="asactorRemove" value="Remove" action="#{artistHome.removeFromMoviesAsActor}">
+					<f:param name="movieId" value="#{_movie.id}" />
+				</s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add movie"
+                view="/MovieList.xhtml">
+            <f:param name="artistId"
+                    value="#{artistHome.instance.id}"/>
+            <f:param name="from" value="ArtistEdit"/>
+            <f:param name="actorOrDir" value="actor"/>
+        </s:button>
+    </div>
+    </rich:tab>
+
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Movies as a director</h:panelGroup>
+        </f:facet>
+    <h:form styleClass="association" id="moviesAsDirectorChildren">
+
+        <h:outputText value="There are no movies associated with this director."
+                   rendered="#{empty artistHome.moviesAsDirector}"/>
+
+        <rich:dataTable value="#{artistHome.moviesAsDirector}"
+                       var="_movie"
+                  rendered="#{not empty artistHome.moviesAsDirector}"
+                rowClasses="rvgRowOne,rvgRowTwo"
+                        id="moviesTable">
+            <rich:column sortBy="#{_movie.id}">
+                <f:facet name="header">Id</f:facet>
+                <h:outputText value="#{_movie.id}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.name}">
+                <f:facet name="header">Name</f:facet>
+                <h:outputText value="#{_movie.name}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.originalName}">
+                <f:facet name="header">Original Name</f:facet>
+                <h:outputText value="#{_movie.originalName}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.playbill}">
+                <f:facet name="header">Playbill</f:facet>
+                <s:graphicImage value="#{_movie.playbill ne null ?
+					_movie.playbill : '/img/generic_playbill.jpg'}"
+					fileName="#{_movie.name}"
+					alt="[playbill image]">
+					<s:transformImageSize height="64" maintainRatio="true"/>
+				</s:graphicImage>
+            </rich:column>
+            <rich:column sortBy="#{_movie.movieYear}">
+                <f:facet name="header">Movie Year</f:facet>
+                <h:outputText value="#{_movie.movieYear}">
+                	<s:convertDateTime pattern="yyyy"/>
+                </h:outputText>
+            </rich:column>
+            <rich:column sortBy="#{_movie.country}">
+                <f:facet name="header">Country</f:facet>
+                <h:outputText value="#{_movie.country.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.movieLength}">
+                <f:facet name="header">Length</f:facet>
+                <h:outputText value="#{_movie.movieLength}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.score}">
+                <f:facet name="header">Score</f:facet>
+                <h:outputText value="#{_movie.score}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.videoCoding.label}">
+                <f:facet name="header">Coding</f:facet>
+                <h:outputText value="#{_movie.videoCoding.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.aspectRatio.label}">
+                <f:facet name="header">Aspect Ratio</f:facet>
+                <h:outputText value="#{_movie.aspectRatio.label}"/>
+            </rich:column>
+            <rich:column sortBy="#{_movie.fromTV}">
+                <f:facet name="header">Rec. from TV</f:facet>
+                <h:selectBooleanCheckbox value="#{_movie.fromTV}" disabled="true"/>
+            </rich:column>
+            <h:column>
+                <f:facet name="header">Action</f:facet>
+                <s:link id="selectmovie"
+                     value="Select"
+                      view="/Movie.xhtml">
+                    <f:param name="movieId"
+                            value="#{_movie.id}"/>
+                    <f:param name="movieFrom" value="ArtistEdit"/>
+                </s:link>
+            	#{' '}
+				<s:link id="asdirectorRemove" value="Remove" action="#{artistHome.removeFromMoviesAsDirector}">
+					<f:param name="movieId" value="#{_movie.id}" />
+				</s:link>
+            </h:column>
+        </rich:dataTable>
+
+    </h:form>
+
+    <div class="actionButtons">
+        <s:button
+               value="Add movie"
+                view="/MovieList.xhtml">
+            <f:param name="artistId"
+                    value="#{artistHome.instance.id}"/>
+            <f:param name="from" value="ArtistEdit"/>
+            <f:param name="actorOrDir" value="director"/>
+        </s:button>
+    </div>
+    </rich:tab>
+
+</rich:tabPanel>
+
+</ui:define>
+
+</ui:composition>

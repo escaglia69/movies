@@ -1,0 +1,99 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:a="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+
+<ui:define name="body">
+
+    <h:form id="audioTrack" styleClass="edit">
+
+        <rich:panel>
+            <f:facet name="header">#{audioTrackHome.managed ? 'Edit' : 'Add'} Audio Track</f:facet>
+
+
+
+            <s:decorate id="trackNumberField" template="layout/edit.xhtml">
+                <ui:define name="label">Track Number</ui:define>
+                <h:inputText id="trackNumber"
+                          value="#{audioTrackHome.instance.trackNumber}">
+                    <a:ajax event="blur" reRender="movieYearField" bypassUpdates="true" ajaxSingle="true"/>
+                </h:inputText>
+            </s:decorate>
+
+            <s:decorate id="languageField" template="layout/edit.xhtml">
+                <ui:define name="label">Language</ui:define>
+				<h:selectOneMenu value="#{audioTrackHome.instance.language}">
+			        <s:selectItems var="language" value="#{langs}"
+						label="#{language.label}" noSelectionLabel="-- Select --"/>
+			         <s:convertEnum/>
+				</h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="audioCodingField" template="layout/edit.xhtml">
+                <ui:define name="label">Audio Coding</ui:define>
+				<h:selectOneMenu value="#{audioTrackHome.instance.audioCoding}">
+			        <s:selectItems var="audioCoding" value="#{audiocodings}"
+						label="#{audioCoding.label}" noSelectionLabel="-- Select --"/>
+			         <s:convertEnum/>
+				</h:selectOneMenu>
+            </s:decorate>
+
+            <s:decorate id="audioChannelField" template="layout/edit.xhtml">
+                <ui:define name="label">Audio Channel</ui:define>
+				<h:selectOneMenu value="#{audioTrackHome.instance.audioChannel}">
+			        <s:selectItems var="audioChannel" value="#{audiochannels}"
+						label="#{audioChannel.label}" noSelectionLabel="-- Select --"/>
+			         <s:convertEnum/>
+				</h:selectOneMenu>
+            </s:decorate>
+
+            <div style="clear:both">
+                <span class="required">*</span>
+                required fields
+            </div>
+
+        </rich:panel>
+
+        <div class="actionButtons">
+
+            <h:commandButton id="save"
+                          value="Save"
+                         action="#{audioTrackHome.persist}"
+                       disabled="#{!audioTrackHome.wired}"
+                       rendered="#{!audioTrackHome.managed}"/>
+
+            <h:commandButton id="update"
+                          value="Save"
+                         action="#{audioTrackHome.update}"
+                       rendered="#{audioTrackHome.managed}"/>
+
+            <h:commandButton id="delete"
+                          value="Delete"
+                         action="#{audioTrackHome.remove}"
+                      immediate="true"
+                       rendered="#{audioTrackHome.managed}"/>
+
+            <s:button id="cancelEdit"
+                   value="Cancel Edit"             
+             propagation="end"
+                  action="#{audioTrackHome.revert}"
+                rendered="#{audioTrackHome.managed}"/>
+
+            <s:button id="cancelAdd"
+                   value="Cancel"
+             propagation="end"
+                    view="/#{empty audioTrackFrom ? 'MovieEdit' : audioTrackFrom}.xhtml"
+                rendered="#{!audioTrackHome.managed}"/>
+
+        </div>
+    </h:form>
+
+</ui:define>
+
+</ui:composition>

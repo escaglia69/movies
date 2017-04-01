@@ -1,337 +1,37 @@
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	    		xmlns:ui="http://java.sun.com/jsf/facelets"
-	  			xmlns:h="http://java.sun.com/jsf/html"
-	  			xmlns:f="http://java.sun.com/jsf/core"
-	  			xmlns:s="http://jboss.org/schema/seam/taglib"
-                xmlns:a="http://richfaces.org/a4j"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:c="http://java.sun.com/jstl/core"
-				template="template.xhtml">
+    xmlns:s="http://jboss.org/schema/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
 
-<ui:define name="head">
-<div class="section">
-  
-    <span class="errors">
-       <h:messages id="messages" globalOnly="true"/>
-    </span>
-    
-    <h1>Search Movies</h1>
+    <ui:define name="body">
 
-	<h:form id="searchCriteria">
-	<fieldset> 
-	   <h:inputText id="searchString" value="#{movieSearch.searchString}">
-         <a:ajax id="onkeyup" event="keyup" actionListener="#{movieSearch.find}" reRender="searchResults" />
-       </h:inputText>
-       &#160;
-	   <a:commandButton id="findMovies" value="Find Movies" action="#{movieSearch.find}" reRender="searchResults"/>
-       &#160;
-       <a:status id="status">
-          <f:facet id="StartStatus" name="start">
-             <h:graphicImage id="SpinnerGif" value="/img/spinner.gif"/>
-          </f:facet>
-       </a:status>
-       <h:outputLabel id="MaximumResultsLabel" for="pageSize">Maximum results:</h:outputLabel>&#160;
-       <h:selectOneMenu id="pageSize" value="#{movieSearch.pageSize}">
-          <f:selectItem id="PageSize5" itemLabel="5" itemValue="5"/>
-          <f:selectItem id="PageSize10" itemLabel="10" itemValue="10"/>
-          <f:selectItem id="PageSize20" itemLabel="20" itemValue="20"/>
-       </h:selectOneMenu>
-	   <br/>
-    </fieldset>
-    </h:form>
-    
-</div>
-</ui:define>
+        <h1>Welcome to Seam!</h1>
+        <rich:panel>
+            <h:panelGrid columns="2">
+			    <h:graphicImage value="/img/seamlogo.png" alt="Seam logo"/>
+                <s:div styleClass="info">
+                    <p><strong>Your seam-gen project is deployed!</strong> Here are some of the features this project provides:</p>
+                    <ul class="bullets">
+                        <li>Ant build script</li>
+                        <li>Deployment to JBoss AS (EAR or WAR)</li>
+                        <li>Development and production profiles</li>
+                        <li>Integration testing using TestNG and Embedded JBoss</li>
+                        <li>JavaBean or EJB 3.0 Seam components</li>
+                        <li>JPA entity classes</li>
+                        <li>A configurable DataSource and JPA EntityManager</li>
+                        <li>Templated Facelets views</li>
+                        <li>RichFaces panels and tables</li>
+                        <li>Default CSS stylesheet</li>
+                        <li>Internationalization support</li>
+                    </ul>
+                </s:div>
+            </h:panelGrid>
+        </rich:panel>
 
-<!-- content -->
-<ui:define name="content">
-
-
-<a:outputPanel id="searchResults">
-  <div class="section">
-	<rich:panel styleClass="mypanel">
-	<h:outputText id="NoMoviesFoundMessage" value="No Movies Found" rendered="#{movies != null and movies.rowCount==0}"/>
-	<h:dataTable id="movies" value="#{movies}" var="movie" rendered="#{movies.rowCount>0}">
-		<h:column id="column1">
-			<f:facet id="NameFacet" name="header">Name</f:facet>
-			#{movie.name}
-		</h:column>
-		<h:column id="column2">
-			<f:facet id="OriginalNameFacet" name="header">Original Name</f:facet>
-			#{movie.originalName}
-		</h:column>
-		<h:column id="column3">
-			<f:facet id="CountryFacet" name="header">Country</f:facet>
-			#{movie.country}
-		</h:column> 
-		<h:column id="column4">
-			<f:facet id="YearFacet" name="header">Year</f:facet>
-            <h:outputText value="#{movie.movieYear}">
-            	<s:convertDateTime pattern="yyyy"/>
-            </h:outputText>
-		</h:column>
-		<h:column id="column5">
-			<f:facet id="ActionFacet" name="header">Action</f:facet>
-			<s:link id="viewMovie" value="View Movie" action="#{movieSearch.fill(movie.id)}"/>
-		</h:column>
-	</h:dataTable>
-	<s:link id="MoreResultsLink" value="More results" action="#{movieSearch.nextPage}" rendered="#{movieSearch.nextPageAvailable}"/>
-	</rich:panel>
-  </div>
-</a:outputPanel>
-
-<div class="section">
-
-	<h:outputText id="NoMoviesSelMessage" value="No Movies Selected" rendered="#{movie == null}"/>
-    <a:outputPanel rendered="#{movie ne null}">
-		<h:panelGrid columns="2" columnClasses="col50,col50">
-          <f:facet name="header">Movie Details</f:facet>
-          <h:panelGroup>
-	        <s:decorate id="name" template="layout/display.xhtml">
-	            <ui:define name="label">Name</ui:define>
-	            <h:outputText value="#{movie.name}"/>
-	        </s:decorate>
-
-	        <s:decorate id="originalName" template="layout/display.xhtml">
-	            <ui:define name="label">Original name</ui:define>
-	            <h:outputText value="#{movie.originalName}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="movieYear" template="layout/display.xhtml">
-	            <ui:define name="label">Movie year</ui:define>
-	            <h:outputText value="#{movie.movieYear}">
-	            	<s:convertDateTime pattern="yyyy"/>
-	            </h:outputText>
-	        </s:decorate>
-	
-	        <s:decorate id="country" template="layout/display.xhtml">
-	            <ui:define name="label">Country</ui:define>
-	            <h:outputText value="#{movie.country.label}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="movieLength" template="layout/display.xhtml">
-	            <ui:define name="label">Length (minutes)</ui:define>
-	            <h:outputText value="#{movie.movieLength}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="plot" template="layout/display.xhtml">
-	            <ui:define name="label">Plot</ui:define>
-	            <h:outputText value="#{movie.plot}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="score" template="layout/display.xhtml">
-	            <ui:define name="label">Score</ui:define>
-	            <h:outputText value="#{movie.score}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="subt" template="layout/display.xhtml">
-	            <ui:define name="label">Subtitle languages</ui:define>
-	            <h:outputText value="#{movie.subt1.label} #{movie.subt2.label} #{movie.subt3.label}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="aspectRatio" template="layout/display.xhtml">
-	            <ui:define name="label">Aspect ratio</ui:define>
-	            <h:outputText value="#{movie.aspectRatio.label}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="videoCoding" template="layout/display.xhtml">
-	            <ui:define name="label">Video coding</ui:define>
-	            <h:outputText value="#{movie.videoCoding.label}"/>
-	        </s:decorate>
-	
-	        <s:decorate id="fromTV" template="layout/display.xhtml">
-	            <ui:define name="label">Recorded from TV</ui:define>
-	            <h:selectBooleanCheckbox value="#{movie.fromTV}" disabled="true"/>
-	        </s:decorate>
-
-	        <s:decorate id="genres" template="layout/display.xhtml">
-	            <ui:define name="label">Genres</ui:define>
-	            <c:forEach items="#{movieSearch.genres}" var="_genre">
-	            	<h:outputText value="#{_genre.name} "/>	            
-	            </c:forEach>
-	        </s:decorate>
-
-	        <s:decorate id="support" template="layout/display.xhtml">
-	            <ui:define name="label">Media</ui:define>
-				<h:panelGrid columns="2" columnClasses="name,value" class="prop">
-					<h:outputText value="Folder"/>
-					<h:outputText value="#{movie.support.folder}" />
-					<h:outputText value="Pos. number"/>
-					<h:outputText value="#{movie.support.posNumber}" />
-			        <h:outputText value="Storage"/>
-					<h:outputText value="#{movie.support.storage}" />
-					<h:outputText value="Borrowed to"/>
-					<h:outputText value="#{movie.support.borrowedTo}" />
-				</h:panelGrid>
-	         </s:decorate>	
-		  </h:panelGroup>
-		  <h:panelGroup>
-	        <s:decorate id="audioTracks" template="layout/display.xhtml">
-	            <ui:define name="label">Audio Tracks</ui:define>
-	        </s:decorate>
-			<rich:panel styleClass="mypanel" rendered="#{not empty movieSearch.audioTracks}">
-					<h:dataTable id="autracksdt" value="#{movieSearch.audioTracks}" var="_autrack" rendered="#{not empty movieSearch.audioTracks}">
-						<h:column id="column1">
-							<f:facet id="NameFacet" name="header">Track Number</f:facet>
-							#{_autrack.trackNumber}
-						</h:column>
-						<h:column id="column2">
-							<f:facet id="NameFacet" name="header">Language</f:facet>
-							#{_autrack.language}
-						</h:column>
-						<h:column id="column3">
-							<f:facet id="NameFacet" name="header">Audio Coding</f:facet>
-							#{_autrack.audioCoding}
-						</h:column>
-						<h:column id="column4">
-							<f:facet id="NameFacet" name="header">Audio Channels</f:facet>
-							#{_autrack.audioChannel}
-						</h:column>
-					</h:dataTable>
-	    	</rich:panel>
-
-		  	<s:decorate id="playbill" template="layout/display.xhtml">
-				<s:graphicImage value="#{movie.playbill ne null ?
-					movie.playbill : '/img/generic_playbill.jpg'}"
-					fileName="#{movie.name}"
-					alt="[playbill image]">
-					<s:transformImageSize width="256" maintainRatio="true"/>
-				</s:graphicImage>
-			</s:decorate>
-		  </h:panelGroup>
-		  
-		</h:panelGrid>
-
-				<!-- <style>
-	#content table {
-	width: auto;
-	border-collapse: collapse;
-	border: 0px;
-	padding: 0px !important;
-	}
-
-	#content table caption {
-	text-align: left;
-	font-weight: bold;
-	padding: 0px !important;
-	}
-
-	#content table thead th {
-	text-align: left;
-	font-size: small;
-	padding: 0px !important;
-	}
-
-	#content table tbody td {
-	font-size: small;
-	padding: 0px;
-	border-bottom: 0px;
-	border-left: 0px;
-	}
-				</style> -->
-    <h:form id="actorsChildren">
-
-        <h:outputText value="There are no actors associated with this movie."
-                   rendered="#{empty movieSearch.actors}"/>
-        <h:outputText value="Actors"
-                   rendered="#{not empty movieSearch.actors}"/>
-
-	    <rich:tabPanel id="tapPanel" switchType="client" rendered="#{not empty movieSearch.actors}">
-			<c:forEach items="#{movieSearch.actors}" var="_actor">
-				<rich:tab name="#{_actor.surname}" >
-					<f:facet name="label">
-					<h:panelGrid columns="2">
-						<h:outputText value="#{_actor.name} #{_actor.surname}" />
-					</h:panelGrid>
-					</f:facet>
-
-					<h:panelGrid columns="2" style="margin: 20px;">
-		                <h:outputText value="Name"/>
-						<h:outputText value="#{_actor.name} #{_actor.surname}" />
-						<h:outputText value="Country"/>
-						<h:outputText value="#{_actor.country}" />
-						<h:outputText value="Picture"/>
-						<s:graphicImage value="#{_actor.picture ne null ?
-								_actor.picture : '/img/generic_profile.jpg'}"
-								fileName="#{_actor.surname}"
-								alt="[profile image]">
-								<s:transformImageSize height="64" maintainRatio="true"/>
-						</s:graphicImage>
-						<h:outputText value="Birth Date"/>
-						<h:outputText value="#{_actor.birthDate}">
-                			<s:convertDateTime type="date"/>
-                		</h:outputText>
-						<h:outputText value="Sex"/>
-						<h:outputText value="#{_actor.sex.label}"/>
-						<h:outputText value="Action"/>
-		                <s:link
-		                     value="Select"
-		                      view="/Artist.xhtml">
-		                    <f:param name="artistId"
-		                            value="#{_actor.id}"/>
-		                    <f:param name="artistFrom" value="main"/>
-		                </s:link>
-						
-					</h:panelGrid>
-				</rich:tab>
-			</c:forEach>
-	    </rich:tabPanel>
-
-    </h:form>
-
-    <h:form id="directorsChildren">
-        <h:outputText value="There are no directors associated with this movie."
-                   rendered="#{empty movieSearch.directors}"/>
-        <h:outputText value="Directors"
-                   rendered="#{not empty movieSearch.directors}"/>
-
-	    <rich:tabPanel id="tabPanel" switchType="client" rendered="#{not empty movieSearch.directors}">
-			<c:forEach items="#{movieSearch.directors}" var="_director">
-				<rich:tab name="#{_director.surname}" >
-					<f:facet name="label">
-					<h:panelGrid columns="2">
-						<h:outputText value="#{_director.name} #{_director.surname}" />
-					</h:panelGrid>
-					</f:facet>
-					<h:panelGrid columns="2" style="margin: 20px;">
-		                <h:outputText value="Name"/>
-						<h:outputText value="#{_director.name} #{_director.surname}" />
-						<h:outputText value="Country"/>
-						<h:outputText value="#{_director.country}" />
-						<h:outputText value="Picture"/>
-						<s:graphicImage value="#{_director.picture ne null ?
-								_director.picture : '/img/generic_profile.jpg'}"
-								fileName="#{_director.surname}"
-								alt="[profile image]">
-								<s:transformImageSize height="64" maintainRatio="true"/>
-						</s:graphicImage>
-						<h:outputText value="Birth Date"/>
-						<h:outputText value="#{_director.birthDate}">
-                			<s:convertDateTime type="date"/>
-                		</h:outputText>
-						<h:outputText value="Sex"/>
-						<h:outputText value="#{_director.sex.label}"/>
-						<h:outputText value="Action"/>
-		                <s:link
-		                     value="Select"
-		                      view="/Artist.xhtml">
-		                    <f:param name="artistId"
-		                            value="#{_director.id}"/>
-		                    <f:param name="artistFrom" value="main"/>
-		                </s:link>
-						
-					</h:panelGrid>
-				</rich:tab>
-			</c:forEach>
-	    </rich:tabPanel>
-
-    </h:form>
-
-    </a:outputPanel>
-
-</div>
-
-</ui:define>
-
+    </ui:define>
 </ui:composition>

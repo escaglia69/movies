@@ -20,7 +20,7 @@ Edit the file jboss_home/standalone/configuration/standalone.xml (or the one sui
                     </security>
                 </datasource>
 ```
-In the example above the I use the h2 db file, located in jboss_home/standalone/deployments, but of course you can place it where you prefer, or even use another db engine as yuo like.
+In the example above the I use the h2 db file, located in jboss_home/standalone/deployments, but of course you can place it where you prefer, or even use another db engine as you like.
 
 You can then build and deploy the project with the command 
 ```

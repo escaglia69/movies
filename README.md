@@ -10,7 +10,8 @@ Edit the file build.properties and set the jboss.home directory making it point 
 
 Edit the file jboss_home/standalone/configuration/standalone.xml (or the one suitable for your JBoss configuration) and add this lines to the datasources section:
 
-```                <datasource jndi-name="java:/moviesDatasource" pool-name="moviesDatasource" enabled="true" use-java-context="true">
+```
+                <datasource jndi-name="java:/moviesDatasource" pool-name="moviesDatasource" enabled="true" use-java-context="true">
                     <connection-url>jdbc:h2:../standalone/deployments/movies;INIT=CREATE SCHEMA IF NOT EXISTS MOVIES</connection-url>
                     <driver>h2</driver>
                     <security>

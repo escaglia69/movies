@@ -21,10 +21,10 @@
 	<h:form id="searchCriteria">
 	<fieldset> 
 	   <h:inputText id="searchString" value="#{movieSearch.searchString}">
-         <a:ajax id="onkeyup" event="keyup" actionListener="#{movieSearch.find}" reRender="searchResults" />
+         <a:ajax id="onkeyup" event="keyup" listener="#{movieSearch.find}" render="searchResults" />
        </h:inputText>
        &#160;
-	   <a:commandButton id="findMovies" value="Find Movies" action="#{movieSearch.find}" reRender="searchResults"/>
+	   <a:commandButton id="findMovies" value="Find Movies" actionListener="#{movieSearch.find}" render="searchResults"/>
        &#160;
        <a:status id="status">
           <f:facet id="StartStatus" name="start">

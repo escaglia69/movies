@@ -21,11 +21,9 @@
     <property name="test.dir" value="test-build"/>
     <property name="bootstrap.dir" value="${basedir}/bootstrap"/>
     <property name="jboss.domain" value="default"/>
-    <property name="deploy.dir" value="${jboss.home}/server/${jboss.domain}/deploy"/>
-    <property name="deployeap6.dir" value="${jbosseap6.home}/standalone\deployments"/>
-    <property name="ear.deploy.dir" value="${deployeap6.dir}/${project.name}.ear"/>
+    <property name="deploy.dir" value="${jboss.home}/standalone/deployments"/>
     <property name="ear.deploy.dir" value="${deploy.dir}/${project.name}.ear"/>
-     <property name="jar.deploy.dir" value="${ear.deploy.dir}/${project.name}.jar"/>
+    <property name="jar.deploy.dir" value="${ear.deploy.dir}/${project.name}.jar"/>
     <property name="war.deploy.dir" value="${ear.deploy.dir}/${project.name}.war"/>
     <property name="testng.jar" value="${basedir}/lib/testng.jar"/>
     <property name="javac.debug" value="true"/>
@@ -262,7 +260,8 @@
             overwrite="true"/>
     </target>
 
-    <target name="explode" depends="stage,datasource"
+    <!-- <target name="explode" depends="stage,datasource" -->
+    <target name="explode" depends="stage"
         description="Deploy the exploded archive">
         <fail unless="jboss.home">jboss.home not set</fail>
 
@@ -302,7 +301,8 @@
 
     <target name="restart" depends="check-deployed,restart-exploded,restart-deployed" description="Restart the exploded archive"/>
 
-    <target name="deploy" depends="archive,datasource" description="Deploy the packaged archive">
+    <!-- <target name="deploy" depends="archive,datasource" description="Deploy the packaged archive"> -->
+    <target name="deploy" depends="archive" description="Deploy the packaged archive">
         <fail unless="jboss.home">jboss.home not set</fail>
         <copy todir="${deploy.dir}" file="${dist.dir}/${project.name}.ear"/>
     </target>

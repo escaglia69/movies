@@ -90,7 +90,10 @@
 
 <rich:tabPanel switchType="client">
 
-    <rich:tab label="Movies">
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/onetomany.gif" style="vertical-align: middle; padding-right: 4px;"/>Movies</h:panelGroup>
+        </f:facet>
         <h:form styleClass="association" id="moviesChildren">
 
             <h:outputText value="There are no movies associated with this support."

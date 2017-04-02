@@ -377,7 +377,10 @@
     </div>
     </rich:tab>
 
-    <rich:tab label="Support">
+    <rich:tab>
+        <f:facet name="header">
+            <h:panelGroup><h:graphicImage value="/img/manytoone.gif" style="vertical-align: middle; padding-right: 4px;"/>Support</h:panelGroup>
+        </f:facet>
     <div class="association" id="supportParent">
 
         <h:outputText value="There is no support associated with this movie."
